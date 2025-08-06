@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 
-export default function HeaderBar(props: any) {
+export default function Header(props: any) {
   const {
     isAdmin,
     setIsAdmin,
