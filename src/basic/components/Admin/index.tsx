@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ProductManagement from "./components/ProductManagement";
 import CouponManagement from "./components/CouponManagement";
 
@@ -39,8 +39,6 @@ type CouponForm = {
 };
 
 type AdminProps = {
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
   setEditingProduct: (id: string | null) => void;
   setProductForm: (form: ProductForm) => void;
   setShowProductForm: (show: boolean) => void;
@@ -63,9 +61,10 @@ type AdminProps = {
 };
 
 export default function Admin(props: AdminProps) {
+  const [activeTab, setActiveTab] = useState<"products" | "coupons">(
+    "products"
+  );
   const {
-    activeTab,
-    setActiveTab,
     setEditingProduct,
     setProductForm,
     setShowProductForm,
