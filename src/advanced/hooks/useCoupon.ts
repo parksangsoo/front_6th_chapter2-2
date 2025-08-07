@@ -39,10 +39,17 @@ export function useCoupon(
   setSelectedCoupon: (coupon: Coupon | null) => void
 ) {
   // TODO: 구현
-  const [coupons, setCoupons] = useLocalStorage<Coupon[]>(
-    "coupons",
-    initialCoupons
-  );
+  const [coupons, setCoupons] = useState<Coupon[]>(() => {
+    const saved = localStorage.getItem("coupons");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return initialCoupons;
+      }
+    }
+    return initialCoupons;
+  });
 
   const addCoupon = useCallback(
     (newCoupon: Coupon) => {

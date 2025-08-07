@@ -14,7 +14,6 @@
 
 import { useCallback, useState } from "react";
 import { ProductWithUI } from "../types/notification";
-import { useLocalStorage } from "../utils/hooks/useLocalStorage";
 
 // addNotification 타입 지정
 type AddNotificationFn = (
@@ -57,11 +56,19 @@ export function useProducts(addNotification: AddNotificationFn) {
       description: "대용량과 고성능을 자랑하는 상품입니다.",
     },
   ];
+
   // TODO: 구현
-  const [products, setProducts] = useLocalStorage<ProductWithUI[]>(
-    "products",
-    initialProducts
-  );
+  const [products, setProducts] = useState<ProductWithUI[]>(() => {
+    const saved = localStorage.getItem("products");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return initialProducts;
+      }
+    }
+    return initialProducts;
+  });
 
   const addProduct = useCallback(
     (newProduct: Omit<ProductWithUI, "id">) => {

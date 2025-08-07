@@ -1,11 +1,13 @@
 import { useState, useCallback, useEffect } from "react";
-import { Notification } from "./types/notification";
+import { Notification, ProductWithUI } from "./types/notification";
 import Admin from "./components/Admin";
 import User from "./components/User";
 import Header from "./components/Header";
 import { useProducts } from "./hooks/useProduct";
 import { useCart } from "./hooks/useCart";
 import { useCoupon } from "./hooks/useCoupon";
+import { calculateCartTotal } from "./models/cart";
+import { useDebounce } from "./utils/hooks/useDebounce";
 
 const App = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -34,9 +36,7 @@ const App = () => {
     removeFromCart,
     updateQuantity,
     applyCoupon,
-    calculateItemTotal,
     getRemainingStock,
-    calculateCartTotal,
   } = useCart(addNotification, products);
 
   const { coupons, addCoupon, deleteCoupon } = useCoupon(
@@ -51,7 +51,8 @@ const App = () => {
 
   const [showProductForm, setShowProductForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   // Admin
   const [editingProduct, setEditingProduct] = useState<string | null>(null);
@@ -78,14 +79,6 @@ const App = () => {
   }, [cart]);
 
   useEffect(() => {
-    localStorage.setItem("products", JSON.stringify(products));
-  }, [products]);
-
-  useEffect(() => {
-    localStorage.setItem("coupons", JSON.stringify(coupons));
-  }, [coupons]);
-
-  useEffect(() => {
     if (cart.length > 0) {
       localStorage.setItem("cart", JSON.stringify(cart));
     } else {
@@ -93,17 +86,10 @@ const App = () => {
     }
   }, [cart]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
-
   const formatPrice = (price: number, productId?: string): string => {
     if (productId) {
       const product = products.find(p => p.id === productId);
-      if (product && getRemainingStock(product) <= 0) {
+      if (product && getRemainingStock(product, cart) <= 0) {
         return "SOLD OUT";
       }
     }
@@ -171,7 +157,7 @@ const App = () => {
     setShowProductForm(true);
   };
 
-  const totals = calculateCartTotal();
+  const totals = calculateCartTotal(cart, selectedCoupon);
 
   const filteredProducts = debouncedSearchTerm
     ? products.filter(
@@ -267,7 +253,6 @@ const App = () => {
             formatPrice={formatPrice}
             addToCart={addToCart}
             cart={cart}
-            calculateItemTotal={calculateItemTotal}
             removeFromCart={removeFromCart}
             updateQuantity={updateQuantity}
             coupons={coupons}

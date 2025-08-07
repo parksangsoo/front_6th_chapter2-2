@@ -3,6 +3,8 @@ import Card from "./components/Card";
 import Coupon from "./components/Coupon";
 import OrderInfo from "./components/OrderInfo";
 import Cart from "./components/Cart";
+import { selectedCouponAtom } from "../../state";
+import { useAtom } from "jotai";
 
 type Product = {
   id: string;
@@ -42,8 +44,6 @@ type UserProps = {
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   coupons: Coupon[];
-  selectedCoupon: Coupon | null;
-  setSelectedCoupon: (coupon: Coupon | null) => void;
   applyCoupon: (coupon: Coupon) => void;
   totals: Totals;
   completeOrder: () => void;
@@ -61,8 +61,6 @@ export default function User(props: UserProps) {
     removeFromCart,
     updateQuantity,
     coupons,
-    selectedCoupon,
-    setSelectedCoupon,
     applyCoupon,
     totals,
     completeOrder,
@@ -115,12 +113,7 @@ export default function User(props: UserProps) {
 
           {cart.length > 0 && (
             <>
-              <Coupon
-                coupons={coupons}
-                selectedCoupon={selectedCoupon}
-                applyCoupon={applyCoupon}
-                setSelectedCoupon={setSelectedCoupon}
-              />
+              <Coupon coupons={coupons} applyCoupon={applyCoupon} />
               <OrderInfo totals={totals} completeOrder={completeOrder} />
             </>
           )}

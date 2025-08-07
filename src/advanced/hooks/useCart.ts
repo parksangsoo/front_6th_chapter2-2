@@ -28,6 +28,8 @@ import { useCallback, useState } from "react";
 import { CartItem, Coupon, Product } from "../../types";
 import { calculateCartTotal, getRemainingStock } from "../models/cart";
 import { ProductWithUI } from "../types/notification";
+import { useAtom } from "jotai";
+import { selectedCouponAtom } from "../state";
 // addNotification 타입 지정
 type AddNotificationFn = (
   message: string,
@@ -39,7 +41,7 @@ export function useCart(
   products: Product[]
 ) {
   // TODO: 구현
-  const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
+  const [selectedCoupon, setSelectedCoupon] = useAtom(selectedCouponAtom);
 
   const [cart, setCart] = useState<CartItem[]>(() => {
     const saved = localStorage.getItem("cart");
@@ -147,8 +149,6 @@ export function useCart(
     cart,
     setCart,
     addToCart,
-    selectedCoupon,
-    setSelectedCoupon,
     updateQuantity,
     applyCoupon,
     removeFromCart,
