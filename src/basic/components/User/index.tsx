@@ -1,4 +1,3 @@
-import React from "react";
 import Card from "./components/Card";
 import Coupon from "./components/Coupon";
 import OrderInfo from "./components/OrderInfo";

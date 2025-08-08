@@ -12,7 +12,7 @@
 // - updateProductStock: 재고 수정
 // - addProductDiscount: 할인 규칙 추가
 
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { ProductWithUI } from "../types/notification";
 import { useLocalStorage } from "../utils/hooks/useLocalStorage";
 

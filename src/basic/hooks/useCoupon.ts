@@ -8,7 +8,7 @@
 // - addCoupon: 새 쿠폰 추가
 // - removeCoupon: 쿠폰 삭제
 
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { Coupon } from "../../types";
 import { useLocalStorage } from "../utils/hooks/useLocalStorage";
 
